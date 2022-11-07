@@ -43,7 +43,8 @@ const excluiProdutoCarrinho = (produto) => {
         },
         cache: false,
         complete: () => {
-            
+            elemento.remove();
+            $('#produtoExcluido').removeClass('.d-none')
         }
     })
 
@@ -91,27 +92,41 @@ jQuery(function () {
     $.get("http://localhost:9000/carrinho", function (data) {
         var dados = data
 
-        for (i = 0; i <= dados.length; i++) {
+        if(dados == 0){
 
-            var tabelaProdutos = `
-            <tr id="${data[i].id}">
-                <td class="w-25">
-                  <img src="${data[i].imagem}" class="img-fluid img-thumbnail" alt="Sheep">
-                </td>
-                <td class='nome'>${data[i].produto}</td>
-                <td>R$ ${data[i].preco}</td>
-                <td class="qty">
-                    <input type="text" class="form-control" onfocusout="atualizaQuantidade(this)" value="${data[i].quantidade}">
-                </td>
-                <td class="total">R$ ${data[i].preco}</td>
-                <td>
-                  <a href="#" class="btn btn-danger btn-sm" onclick="excluiProdutoCarrinho(this)">
-                    <i class="fa fa-times"></i>
-                  </a>
-                </td>
-              </tr>
-        `
-            $('#carrinho').append(tabelaProdutos)
+            var carrinhoVazio = `
+            <div class="d-flex justify-content-center">
+                CARRINHO VAZIO
+            </div>
+            `
+            $('table').remove()
+            $('#carrinhoVazio').append(carrinhoVazio)
+
+        }else{
+
+            for (i = 0; i <= dados.length; i++) {
+
+                var tabelaProdutos = `
+                <tr id="${data[i].id}">
+                    <td class="w-25">
+                      <img src="${data[i].imagem}" class="img-fluid img-thumbnail" alt="Sheep">
+                    </td>
+                    <td class='nome'>${data[i].produto}</td>
+                    <td>R$ ${data[i].preco}</td>
+                    <td class="qty">
+                        <input type="text" class="form-control" onfocusout="atualizaQuantidade(this)" value="${data[i].quantidade}">
+                    </td>
+                    <td class="total">R$ ${data[i].preco}</td>
+                    <td>
+                      <a href="#" class="btn btn-danger btn-sm" onclick="excluiProdutoCarrinho(this)">
+                        <i class="fa fa-times"></i>
+                      </a>
+                    </td>
+                  </tr>
+            `
+                $('#carrinho').append(tabelaProdutos)
+            }            
+
         }
 
     })
