@@ -29,9 +29,7 @@ const adicionarCarrinho = (produto) => {
             imagem: imagem
         }),
         complete: () => {
-            let totalCompra = parseInt($('#totalCompra')[0].innerText.split(' ')[1])
-            console.log(totalCompra)
-            $('#totalCompra')[0].innerText = 'R$ ' + (parseFloat(valor) + $('#totalCompra')[0].innerText.split(' ')[1]) + '.00'
+            $('#totalCompra')[0].innerText = 'R$ ' + (parseFloat(valor) + $('#totalCompra')[0].innerText.split(' ')[1]) + ',00'
 
             location.reload()
         }
@@ -55,7 +53,7 @@ const excluiProdutoCarrinho = (produto) => {
         complete: () => {
             const current = parseFloat(elemento.querySelector('.total').innerText.split(' ')[1])
             const qTaLaDentro = $('#totalCompra')[0].innerText.split(' ')[1]
-            $('#totalCompra')[0].innerText = 'R$ ' + (qTaLaDentro - current) + '.00'
+            $('#totalCompra')[0].innerText = 'R$ ' + (qTaLaDentro - current) + ',00'
             
             elemento.remove();
             
@@ -83,9 +81,9 @@ const atualizaQuantidade = (item) => {
     const quantidade = parseInt(item.value)
     const nome = e.querySelector('.nome').innerText
 
-    const valor = parseFloat(e.querySelector('.total').innerText.split(' ')[1].split('.').join(''))
+    const valor = parseFloat(e.querySelector('.total').innerText.split(' ')[1])
     const total = valor * quantidade
-    e.querySelector('.total').innerText = 'R$' + total
+    e.querySelector('.total').innerText = 'R$' + total + ',00'
 
     $.ajax({
         method: "PUT",
@@ -104,7 +102,9 @@ const atualizaQuantidade = (item) => {
             imagem: imagem
         }),
         complete: () => {
-
+            let current = $('#totalCompra')[0].innerText.split(' ')[1]
+            console.log(current, total)
+            $('#totalCompra')[0].innerText = 'R$ ' + (parseFloat((total) - valor) + parseFloat(current)) + ',00'
         }
     })
 
