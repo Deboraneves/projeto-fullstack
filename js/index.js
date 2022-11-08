@@ -1,5 +1,5 @@
 const abreModal = () => {
-    $('#cartModal').modal('show');
+    
 }
 
 // MÉTODO POST
@@ -32,6 +32,7 @@ const adicionarCarrinho = (produto) => {
             let totalCompra = parseInt($('#totalCompra')[0].innerText.split(' ')[1])
             console.log(totalCompra)
             $('#totalCompra')[0].innerText = 'R$ ' + (parseFloat(valor) + $('#totalCompra')[0].innerText.split(' ')[1]) + '.00'
+
             location.reload()
         }
     })
