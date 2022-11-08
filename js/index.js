@@ -44,7 +44,17 @@ const excluiProdutoCarrinho = (produto) => {
         cache: false,
         complete: () => {
             elemento.remove();
-            $('#produtoExcluido').removeClass('.d-none')
+            
+            if($('#carrinho')[0].innerText == ''){
+                var carrinhoVazio = `
+                <div class="d-flex justify-content-center">
+                    CARRINHO VAZIO
+                </div>
+                `
+
+                $('table').remove()
+                $('#carrinhoVazio').append(carrinhoVazio)
+            }
         }
     })
 
@@ -61,7 +71,7 @@ const atualizaQuantidade = (item) => {
 
     const valor = parseFloat(e.querySelector('.total').innerText.split(' ')[1].split('.').join(''))
     const total = valor * quantidade
-    e.querySelector('.total').innerText = total
+    e.querySelector('.total').innerText = 'R$' + total
 
     $.ajax({
         method: "PUT",
