@@ -1,3 +1,7 @@
+const abreModal = () => {
+    $('#cartModal').modal('show');
+}
+
 // MÉTODO POST
 const adicionarCarrinho = (produto) => {
     const item = produto.parentNode.parentNode.parentNode
@@ -25,6 +29,9 @@ const adicionarCarrinho = (produto) => {
             imagem: imagem
         }),
         complete: () => {
+            let totalCompra = parseInt($('#totalCompra')[0].innerText.split(' ')[1])
+            console.log(totalCompra)
+            $('#totalCompra')[0].innerText = 'R$ ' + (parseFloat(valor) + $('#totalCompra')[0].innerText.split(' ')[1]) + '.00'
             location.reload()
         }
     })
@@ -33,7 +40,9 @@ const adicionarCarrinho = (produto) => {
 const excluiProdutoCarrinho = (produto) => {
     const elemento = produto.parentNode.parentNode
     let id = parseInt(elemento.id)
-
+    console.log(document.querySelector(`[id="${id}]"`))
+    
+    
     $.ajax({
         method: "DELETE",
         url: `http://localhost:9000/carrinho/${id}`,
@@ -43,6 +52,10 @@ const excluiProdutoCarrinho = (produto) => {
         },
         cache: false,
         complete: () => {
+            const current = parseFloat(elemento.querySelector('.total').innerText.split(' ')[1])
+            const qTaLaDentro = $('#totalCompra')[0].innerText.split(' ')[1]
+            $('#totalCompra')[0].innerText = 'R$ ' + (qTaLaDentro - current) + '.00'
+            
             elemento.remove();
             
             if($('#carrinho')[0].innerText == ''){
@@ -103,42 +116,41 @@ jQuery(function () {
         var dados = data
 
         if(dados == 0){
-
+            
             var carrinhoVazio = `
             <div class="d-flex justify-content-center">
                 CARRINHO VAZIO
-            </div>
+                </div>
             `
+            
             $('table').remove()
             $('#carrinhoVazio').append(carrinhoVazio)
-
-        }else{
-
-            for (i = 0; i <= dados.length; i++) {
-
-                var tabelaProdutos = `
-                <tr id="${data[i].id}">
-                    <td class="w-25">
-                      <img src="${data[i].imagem}" class="img-fluid img-thumbnail" alt="Sheep">
-                    </td>
-                    <td class='nome'>${data[i].produto}</td>
-                    <td>R$ ${data[i].preco}</td>
-                    <td class="qty">
-                        <input type="text" class="form-control" onfocusout="atualizaQuantidade(this)" value="${data[i].quantidade}">
-                    </td>
-                    <td class="total">R$ ${data[i].preco}</td>
-                    <td>
-                      <a href="#" class="btn btn-danger btn-sm" onclick="excluiProdutoCarrinho(this)">
-                        <i class="fa fa-times"></i>
-                      </a>
-                    </td>
-                  </tr>
-            `
-                $('#carrinho').append(tabelaProdutos)
-            }            
-
+            return
         }
-
+            
+        let total = 0
+        for (i = 0; i <= dados.length; i++) {
+            const tabelaProdutos = `
+            <tr id="${data[i].id}">
+                <td class="w-25">
+                    <img src="${data[i].imagem}" class="img-fluid img-thumbnail" alt="Sheep">
+                </td>
+                <td class='nome'>${data[i].produto}</td>
+                <td>R$ ${data[i].preco},00</td>
+                <td class="qty">
+                    <input type="text" class="form-control" onfocusout="atualizaQuantidade(this)" value="${data[i].quantidade}">
+                </td>
+                <td class="total">R$ ${data[i].preco},00</td>
+                <td>
+                    <a href="#" class="btn btn-danger btn-sm" onclick="excluiProdutoCarrinho(this)">
+                    <i class="fa fa-times"></i>
+                    </a>
+                </td>
+                </tr>
+            `
+            $('#carrinho').append(tabelaProdutos)
+            total += data[i].preco
+            $('#totalCompra')[0].innerText = 'R$ ' + total }
     })
 
 })
